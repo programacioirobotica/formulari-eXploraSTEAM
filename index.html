@@ -533,16 +533,25 @@
     btn.disabled = true;
     btn.innerHTML = '<span class="spin"></span> Enviant...';
 
-    // Enviament via GET + URLSearchParams — sense CORS, sense redirects problemàtics
     const params = new URLSearchParams(dades);
-    new Image().src = APPS_SCRIPT_URL + '?' + params.toString();
+    const url = APPS_SCRIPT_URL + '?' + params.toString();
 
-    // Mostrem l'èxit després d'1.5 s (temps per a que el script processi)
-    setTimeout(() => {
-      document.getElementById('form-wrapper').style.display = 'none';
-      document.getElementById('success').classList.add('on');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }, 1500);
+    try {
+      const resp = await fetch(url, { redirect: 'follow' });
+      const text = await resp.text();
+      if (text.trim() === 'OK') {
+        document.getElementById('form-wrapper').style.display = 'none';
+        document.getElementById('success').classList.add('on');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        throw new Error('Resposta del servidor: ' + text);
+      }
+    } catch (err) {
+      btn.disabled = false;
+      btn.innerHTML = 'Inscriure\'m a la jornada';
+      alert('Error en enviar: ' + err.message + '\n\nSi el problema persisteix, contacteu amb l\'organització.');
+      console.error(err);
+    }
   });
 </script>
 </body>
