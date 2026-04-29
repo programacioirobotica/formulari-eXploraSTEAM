@@ -375,6 +375,12 @@
   </div>
 </div>
 
+<!-- Formulari ocult + iframe per enviar dades a Apps Script sense CORS -->
+<form id="hidden-form" method="POST" target="hidden-frame" style="display:none">
+  <input type="hidden" name="payload" id="payload-input">
+</form>
+<iframe name="hidden-frame" style="display:none"></iframe>
+
 <script>
   // ── Configuració ──────────────────────────────────────────────────────────
   // Substituïu per la URL del vostre Google Apps Script després de desplegar-lo
@@ -532,21 +538,16 @@
     btn.disabled = true;
     btn.innerHTML = '<span class="spin"></span> Enviant...';
 
-    try {
-      await fetch(APPS_SCRIPT_URL, {
-        method: 'POST',
-        body: JSON.stringify(dades),
-        mode: 'no-cors',
-      });
-      // Mostrar èxit (Apps Script pot tornar opaque response; ho tractem sempre com a èxit)
+    // Enviament via formulari ocult — evita completament problemes CORS amb Apps Script
+    document.getElementById('payload-input').value = JSON.stringify(dades);
+    document.getElementById('hidden-form').action = APPS_SCRIPT_URL;
+    document.getElementById('hidden-form').submit();
+
+    setTimeout(() => {
       document.getElementById('form-wrapper').style.display = 'none';
       document.getElementById('success').classList.add('on');
       window.scrollTo({ top: 0, behavior: 'smooth' });
-    } catch (err) {
-      alert('Hi ha hagut un error en enviar el formulari. Torneu-ho a intentar o contacteu amb l\'organització.');
-      btn.disabled = false;
-      btn.innerHTML = 'Inscriure\'m a la jornada';
-    }
+    }, 2000);
   });
 </script>
 </body>
