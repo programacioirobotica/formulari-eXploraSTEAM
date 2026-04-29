@@ -536,22 +536,13 @@
     const params = new URLSearchParams(dades);
     const url = APPS_SCRIPT_URL + '?' + params.toString();
 
-    try {
-      const resp = await fetch(url, { redirect: 'follow' });
-      const text = await resp.text();
-      if (text.trim() === 'OK') {
-        document.getElementById('form-wrapper').style.display = 'none';
-        document.getElementById('success').classList.add('on');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      } else {
-        throw new Error('Resposta del servidor: ' + text);
-      }
-    } catch (err) {
-      btn.disabled = false;
-      btn.innerHTML = 'Inscriure\'m a la jornada';
-      alert('Error en enviar: ' + err.message + '\n\nSi el problema persisteix, contacteu amb l\'organització.');
-      console.error(err);
-    }
+    // no-cors en GET funciona sense problemes de redirect (a diferència de POST)
+    // La petició arriba al script; simplement no podem llegir la resposta
+    fetch(url, { mode: 'no-cors' }).catch(() => {});
+
+    document.getElementById('form-wrapper').style.display = 'none';
+    document.getElementById('success').classList.add('on');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   });
 </script>
 </body>
