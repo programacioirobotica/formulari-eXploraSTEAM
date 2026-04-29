@@ -99,7 +99,14 @@
     .rlabel small  { color: var(--muted); font-size: .85rem; }
 
     /* ── Workshops ── */
-    #sec-tallers { display: none; }
+    #sec-tallers {
+      display: none; overflow: hidden;
+      transition: opacity .35s ease, transform .35s ease;
+      opacity: 0; transform: translateY(-8px);
+    }
+    #sec-tallers.visible {
+      opacity: 1; transform: translateY(0);
+    }
     .note-box {
       background: #fffbee; border: 1px solid #f0c778; border-radius: 10px;
       padding: .875rem 1rem; margin-bottom: 1.25rem; font-size: .88rem; color: #7a5c1e;
@@ -291,14 +298,15 @@
 
       <!-- 3. Selecció de tallers -->
       <div class="section" id="sec-tallers">
-        <div class="section-title">Selecció de tallers</div>
+        <div class="section-title">Tria de tallers</div>
         <div class="note-box">
-          <strong>Com seleccionar:</strong> Feu clic als tallers per ordenar-los per preferència
-          (1a, 2a i 3a opció). Podeu triar fins a 3 tallers. Torneu a fer clic per deseleccionar.
+          <strong>Com funciona:</strong> Indica'ns les teves 3 preferències de taller per ordre de prioritat.
+          Se t'assignarà <strong>un sol taller</strong> i te'l comunicarem pròximament.
+          Feu clic per seleccionar i torneu a fer clic per deseleccionar.
         </div>
         <div class="w-grid" id="w-grid"></div>
-        <div class="w-count" id="w-count">0 de 3 tallers seleccionats</div>
-        <span class="ferr" id="e-tallers">Seleccioneu almenys un taller si trieu el format amb tallers</span>
+        <div class="w-count" id="w-count">0 de 3 preferències seleccionades</div>
+        <span class="ferr" id="e-tallers">Seleccioneu almenys una preferència de taller</span>
       </div>
 
       <!-- 4. Protecció de dades -->
@@ -432,7 +440,7 @@
     });
     const n = seleccio.length;
     document.getElementById('w-count').textContent =
-      n + ' de 3 taller' + (n !== 1 ? 's' : '') + ' seleccionat' + (n !== 1 ? 's' : '');
+      n + ' de 3 preferènci' + (n !== 1 ? 'es' : 'a') + ' seleccionad' + (n !== 1 ? 'es' : 'a');
   }
 
   // ── Format de participació ────────────────────────────────────────────────
@@ -442,7 +450,14 @@
     document.getElementById('opt-t').classList.toggle('on', f === 't');
     document.getElementById('opt-a').querySelector('input').checked = f === 'a';
     document.getElementById('opt-t').querySelector('input').checked = f === 't';
-    document.getElementById('sec-tallers').style.display = f === 't' ? 'block' : 'none';
+    const sec = document.getElementById('sec-tallers');
+    if (f === 't') {
+      sec.style.display = 'block';
+      requestAnimationFrame(() => sec.classList.add('visible'));
+    } else {
+      sec.classList.remove('visible');
+      sec.addEventListener('transitionend', () => { if (!sec.classList.contains('visible')) sec.style.display = 'none'; }, { once: true });
+    }
     hide('e-format');
   }
 
