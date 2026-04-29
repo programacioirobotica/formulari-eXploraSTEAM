@@ -535,10 +535,8 @@
     try {
       await fetch(APPS_SCRIPT_URL, {
         method: 'POST',
-        // text/plain evita el preflight CORS i Apps Script pot llegir-lo igualment
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
         body: JSON.stringify(dades),
-        redirect: 'follow',
+        mode: 'no-cors',
       });
       // Mostrar èxit (Apps Script pot tornar opaque response; ho tractem sempre com a èxit)
       document.getElementById('form-wrapper').style.display = 'none';
