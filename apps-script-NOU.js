@@ -156,5 +156,8 @@ function enviarCorreu(p) {
     to:       p.email,
     subject:  'Confirmació d\'inscripció a eXploraSTEAM 2026',
     htmlBody: html,
+    name:     'eXploraSTEAM 2026',
+    // Si teniu un alias configurat al Gmail, descomenteu la línia següent:
+    // from: 'explorasteam@xtec.cat',
   });
 }
