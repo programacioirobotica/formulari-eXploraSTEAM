@@ -266,28 +266,27 @@
         </div>
       </div>
 
-      <!-- 2. Format de participació -->
+      <!-- 2. Tallers -->
       <div class="section">
-        <div class="section-title">Format de participació</div>
+        <div class="section-title">Assistiràs a la franja de tallers i experiències de centres?</div>
         <div class="radio-group">
-          <label class="radio-opt" id="opt-a" onclick="triaFormat('a')">
-            <input type="radio" name="format" value="a">
-            <div class="radio-disc"></div>
-            <div class="rlabel">
-              <strong>Només assistència</strong>
-              <small>Assistiu a la jornada sense participar en tallers</small>
-            </div>
-          </label>
           <label class="radio-opt" id="opt-t" onclick="triaFormat('t')">
             <input type="radio" name="format" value="t">
             <div class="radio-disc"></div>
             <div class="rlabel">
-              <strong>Assistència i tallers</strong>
-              <small>Participeu a la jornada i en fins a 3 tallers de la vostra elecció</small>
+              <strong>Sí</strong>
+              <small>Tria de tallers: prioritza 3 opcions (1a, 2a, 3a)</small>
+            </div>
+          </label>
+          <label class="radio-opt" id="opt-a" onclick="triaFormat('a')">
+            <input type="radio" name="format" value="a">
+            <div class="radio-disc"></div>
+            <div class="rlabel">
+              <strong>No</strong>
             </div>
           </label>
         </div>
-        <span class="ferr" id="e-format" style="margin-top:.6rem">Seleccioneu un format de participació</span>
+        <span class="ferr" id="e-format" style="margin-top:.6rem">Seleccioneu una opció</span>
       </div>
 
       <!-- 3. Selecció de tallers -->
@@ -520,7 +519,7 @@
       centre:    document.getElementById('centre').value.trim(),
       poblacio:  document.getElementById('poblacio').value.trim(),
       email:     emailEl.value.trim(),
-      format:    format === 'a' ? 'Només assistència' : 'Assistència i tallers',
+      format:    format === 'a' ? 'No' : 'Sí',
       taller1:   nomsTallers[0] || '',
       taller2:   nomsTallers[1] || '',
       taller3:   nomsTallers[2] || '',
