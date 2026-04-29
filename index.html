@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inscripció eXploraSTEAM 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary:       #1b5e34;
+      --primary-light: #2d8a56;
+      --secondary:     #52b788;
+      --accent:        #c68c3a;
+      --bg:            #f2f7f4;
+      --card:          #ffffff;
+      --text:          #1a2e24;
+      --muted:         #4a6658;
+      --border:        #b7d5c5;
+      --error:         #c0392b;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Nunito', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+    /* ── Header ── */
+    .header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+      color: #fff; padding: 2.5rem 1rem; text-align: center;
+      box-shadow: 0 4px 20px rgba(0,0,0,.2);
+    }
+    .header img { max-width: 300px; height: auto; border-radius: 12px;
+      box-shadow: 0 4px 18px rgba(0,0,0,.35); margin-bottom: 1.25rem; }
+    .header h1 { font-size: 1.75rem; font-weight: 800; margin-bottom: .4rem; }
+    .header p  { opacity: .9; font-size: 1rem; }
+
+    /* ── Layout ── */
+    .container { max-width: 780px; margin: 2rem auto; padding: 0 1rem 4rem; }
+
+    /* ── Card sections ── */
+    .section {
+      background: var(--card); border-radius: 16px; padding: 2rem;
+      margin-bottom: 1.5rem; border: 1px solid var(--border);
+      box-shadow: 0 2px 12px rgba(0,0,0,.06);
+    }
+    .section-title {
+      font-size: 1.1rem; font-weight: 800; color: var(--primary);
+      margin-bottom: 1.5rem; display: flex; align-items: center; gap: .6rem;
+    }
+    .section-title::before {
+      content: ''; width: 4px; height: 1.1rem;
+      background: var(--accent); border-radius: 2px; flex-shrink: 0;
+    }
+
+    /* ── Grid ── */
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .form-grid .full { grid-column: 1 / -1; }
+
+    /* ── Fields ── */
+    .field { display: flex; flex-direction: column; gap: .35rem; }
+    .field label {
+      font-weight: 700; font-size: .82rem; color: var(--muted);
+      text-transform: uppercase; letter-spacing: .04em;
+    }
+    .field label .req { color: var(--error); margin-left: 2px; }
+    .field input {
+      padding: .75rem 1rem; border: 2px solid var(--border); border-radius: 10px;
+      font-family: inherit; font-size: 1rem; color: var(--text); background: #fafcfb;
+      transition: border-color .2s, box-shadow .2s; outline: none;
+    }
+    .field input:focus {
+      border-color: var(--secondary); background: #fff;
+      box-shadow: 0 0 0 3px rgba(82,183,136,.2);
+    }
+    .field input.err { border-color: var(--error); }
+    .ferr { color: var(--error); font-size: .8rem; display: none; margin-top: .15rem; }
+    .ferr.on { display: block; }
+
+    /* ── Radio format ── */
+    .radio-group { display: flex; flex-direction: column; gap: .75rem; }
+    .radio-opt {
+      display: flex; align-items: center; gap: 1rem;
+      padding: 1rem 1.25rem; border: 2px solid var(--border);
+      border-radius: 12px; cursor: pointer; background: #fafcfb;
+      transition: border-color .2s, background .2s;
+    }
+    .radio-opt:hover { border-color: var(--secondary); background: #f0f9f4; }
+    .radio-opt.on  { border-color: var(--primary); background: #e8f5ee; }
+    .radio-opt input { display: none; }
+    .radio-disc {
+      width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--border);
+      flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+      transition: all .2s;
+    }
+    .radio-opt.on .radio-disc { border-color: var(--primary); background: var(--primary); }
+    .radio-opt.on .radio-disc::after {
+      content: ''; width: 8px; height: 8px; background: #fff; border-radius: 50%;
+    }
+    .rlabel strong { display: block; font-weight: 700; }
+    .rlabel small  { color: var(--muted); font-size: .85rem; }
+
+    /* ── Workshops ── */
+    #sec-tallers { display: none; }
+    .note-box {
+      background: #fffbee; border: 1px solid #f0c778; border-radius: 10px;
+      padding: .875rem 1rem; margin-bottom: 1.25rem; font-size: .88rem; color: #7a5c1e;
+    }
+    .w-grid { display: grid; gap: .75rem; }
+    .w-card {
+      display: flex; align-items: center; gap: 1rem;
+      padding: .9rem 1.25rem; border: 2px solid var(--border);
+      border-radius: 12px; cursor: pointer; background: #fafcfb;
+      transition: all .2s; user-select: none;
+    }
+    .w-card:hover:not(.blocked) { border-color: var(--secondary); background: #f0f9f4; }
+    .w-card.r1 { border-color: var(--primary);  background: #e8f5ee; }
+    .w-card.r2 { border-color: #2980b9;          background: #e8f4fd; }
+    .w-card.r3 { border-color: var(--accent);    background: #fef9e7; }
+    .w-card.blocked { opacity: .45; cursor: not-allowed; }
+    .w-badge {
+      width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: .82rem; flex-shrink: 0; color: #bbb;
+      transition: all .2s;
+    }
+    .w-card.r1 .w-badge { background: var(--primary); border-color: var(--primary); color: #fff; }
+    .w-card.r2 .w-badge { background: #2980b9; border-color: #2980b9; color: #fff; }
+    .w-card.r3 .w-badge { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .w-name { flex: 1; font-weight: 600; font-size: .93rem; line-height: 1.4; }
+    .w-count { font-size: .78rem; font-weight: 600; color: var(--muted); margin-top: .75rem; }
+
+    /* ── Checkboxes ── */
+    .checks { display: flex; flex-direction: column; gap: 1rem; }
+    .chk-row { display: flex; align-items: flex-start; gap: .875rem; }
+    .chk-row input { display: none; }
+    .chk-box {
+      width: 22px; height: 22px; border: 2px solid var(--border); border-radius: 6px;
+      flex-shrink: 0; margin-top: 2px; display: flex; align-items: center;
+      justify-content: center; cursor: pointer; transition: all .2s; background: #fafcfb;
+    }
+    .chk-row input:checked + .chk-box { background: var(--primary); border-color: var(--primary); }
+    .chk-row input:checked + .chk-box::after { content: '✓'; color: #fff; font-size: 13px; font-weight: 700; }
+    .chk-lbl { font-size: .9rem; line-height: 1.5; cursor: pointer; }
+    .chk-lbl .lnk { color: var(--primary); text-decoration: underline; font-weight: 700; cursor: pointer; }
+
+    /* ── Submit ── */
+    .submit-wrap { text-align: center; }
+    .btn-submit {
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      color: #fff; border: none; padding: 1rem 3.5rem; border-radius: 50px;
+      font-family: inherit; font-size: 1.1rem; font-weight: 800; cursor: pointer;
+      box-shadow: 0 4px 16px rgba(27,94,52,.3); transition: all .2s; letter-spacing: .02em;
+    }
+    .btn-submit:hover  { transform: translateY(-2px); box-shadow: 0 6px 22px rgba(27,94,52,.4); }
+    .btn-submit:active { transform: translateY(0); }
+    .btn-submit:disabled { opacity: .6; cursor: not-allowed; transform: none; }
+    .note-send { margin-top: .75rem; font-size: .8rem; color: var(--muted); }
+
+    /* ── Spinner ── */
+    .spin {
+      display: inline-block; width: 18px; height: 18px;
+      border: 3px solid rgba(255,255,255,.3); border-radius: 50%;
+      border-top-color: #fff; animation: rot .7s linear infinite;
+      vertical-align: middle; margin-right: .4rem;
+    }
+    @keyframes rot { to { transform: rotate(360deg); } }
+
+    /* ── Success ── */
+    .success { display: none; text-align: center; padding: 4rem 2rem; }
+    .success.on { display: block; }
+    .success .ico { font-size: 4rem; margin-bottom: 1rem; }
+    .success h2  { color: var(--primary); font-size: 1.8rem; font-weight: 800; margin-bottom: 1rem; }
+    .success p   { color: var(--muted); font-size: 1rem; max-width: 480px; margin: 0 auto; line-height: 1.7; }
+    .success p + p { margin-top: .75rem; }
+
+    /* ── Modal ── */
+    .overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,.6); z-index: 999;
+      display: flex; align-items: center; justify-content: center; padding: 1rem;
+      opacity: 0; visibility: hidden; transition: all .3s;
+    }
+    .overlay.on { opacity: 1; visibility: visible; }
+    .modal {
+      background: #fff; border-radius: 20px; max-width: 650px; width: 100%;
+      max-height: 82vh; display: flex; flex-direction: column;
+      box-shadow: 0 20px 60px rgba(0,0,0,.3);
+      transform: scale(.9); transition: transform .3s;
+    }
+    .overlay.on .modal { transform: scale(1); }
+    .modal-hd {
+      background: var(--primary); color: #fff; padding: 1.25rem 1.5rem;
+      display: flex; align-items: center; justify-content: space-between;
+      border-radius: 20px 20px 0 0;
+    }
+    .modal-hd h3 { font-weight: 800; font-size: 1rem; }
+    .modal-cls { background: none; border: none; color: #fff; font-size: 1.6rem; cursor: pointer; line-height: 1; opacity: .8; }
+    .modal-cls:hover { opacity: 1; }
+    .modal-body { padding: 1.5rem; overflow-y: auto; flex: 1; }
+    .modal-body p { font-size: .875rem; line-height: 1.65; color: var(--text); margin-bottom: 1rem; }
+    .modal-body p:last-child { margin-bottom: 0; }
+    .modal-body strong { color: var(--primary); }
+    .modal-ft { padding: 1rem 1.5rem; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; }
+    .btn-accept {
+      background: var(--primary); color: #fff; border: none; padding: .75rem 2rem;
+      border-radius: 50px; font-family: inherit; font-weight: 700; font-size: .95rem;
+      cursor: pointer; transition: background .2s;
+    }
+    .btn-accept:hover { background: var(--primary-light); }
+
+    /* ── Responsive ── */
+    @media (max-width: 580px) {
+      .form-grid { grid-template-columns: 1fr; }
+      .form-grid .full { grid-column: 1; }
+      .header h1 { font-size: 1.35rem; }
+      .section { padding: 1.25rem; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <img src="https://projectes.xtec.cat/steamcat/wp-content/uploads/usu1760/2026/04/Caratula-eXplora26-2.png"
+       alt="eXploraSTEAM 2026" loading="lazy">
+  <h1>Inscripció eXploraSTEAM 2026</h1>
+  <p>Ompliu el formulari per registrar-vos a la jornada</p>
+</div>
+
+<div class="container">
+
+  <div id="form-wrapper">
+    <form id="form" novalidate>
+
+      <!-- 1. Dades personals -->
+      <div class="section">
+        <div class="section-title">Dades personals</div>
+        <div class="form-grid">
+          <div class="field">
+            <label>Nom <span class="req">*</span></label>
+            <input type="text" id="nom" autocomplete="given-name" placeholder="El vostre nom">
+            <span class="ferr" id="e-nom">Camp obligatori</span>
+          </div>
+          <div class="field">
+            <label>Cognoms <span class="req">*</span></label>
+            <input type="text" id="cognoms" autocomplete="family-name" placeholder="Els vostres cognoms">
+            <span class="ferr" id="e-cognoms">Camp obligatori</span>
+          </div>
+          <div class="field">
+            <label>DNI / NIE <span class="req">*</span></label>
+            <input type="text" id="dni" placeholder="Ex: 12345678A">
+            <span class="ferr" id="e-dni">Camp obligatori</span>
+          </div>
+          <div class="field">
+            <label>Centre educatiu <span class="req">*</span></label>
+            <input type="text" id="centre" placeholder="Nom del centre">
+            <span class="ferr" id="e-centre">Camp obligatori</span>
+          </div>
+          <div class="field">
+            <label>Població <span class="req">*</span></label>
+            <input type="text" id="poblacio" placeholder="Població">
+            <span class="ferr" id="e-poblacio">Camp obligatori</span>
+          </div>
+          <div class="field">
+            <label>Correu electrònic <span class="req">*</span></label>
+            <input type="email" id="email" autocomplete="email" placeholder="correu@exemple.cat">
+            <span class="ferr" id="e-email">Adreça de correu no vàlida</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. Format de participació -->
+      <div class="section">
+        <div class="section-title">Format de participació</div>
+        <div class="radio-group">
+          <label class="radio-opt" id="opt-a" onclick="triaFormat('a')">
+            <input type="radio" name="format" value="a">
+            <div class="radio-disc"></div>
+            <div class="rlabel">
+              <strong>Només assistència</strong>
+              <small>Assistiu a la jornada sense participar en tallers</small>
+            </div>
+          </label>
+          <label class="radio-opt" id="opt-t" onclick="triaFormat('t')">
+            <input type="radio" name="format" value="t">
+            <div class="radio-disc"></div>
+            <div class="rlabel">
+              <strong>Assistència i tallers</strong>
+              <small>Participeu a la jornada i en fins a 3 tallers de la vostra elecció</small>
+            </div>
+          </label>
+        </div>
+        <span class="ferr" id="e-format" style="margin-top:.6rem">Seleccioneu un format de participació</span>
+      </div>
+
+      <!-- 3. Selecció de tallers -->
+      <div class="section" id="sec-tallers">
+        <div class="section-title">Selecció de tallers</div>
+        <div class="note-box">
+          <strong>Com seleccionar:</strong> Feu clic als tallers per ordenar-los per preferència
+          (1a, 2a i 3a opció). Podeu triar fins a 3 tallers. Torneu a fer clic per deseleccionar.
+        </div>
+        <div class="w-grid" id="w-grid"></div>
+        <div class="w-count" id="w-count">0 de 3 tallers seleccionats</div>
+        <span class="ferr" id="e-tallers">Seleccioneu almenys un taller si trieu el format amb tallers</span>
+      </div>
+
+      <!-- 4. Protecció de dades -->
+      <div class="section">
+        <div class="section-title">Protecció de dades i consentiments</div>
+        <div class="checks">
+          <div class="chk-row">
+            <input type="checkbox" id="privacy">
+            <div class="chk-box" onclick="togChk('privacy')"></div>
+            <div class="chk-lbl" onclick="togChk('privacy')">
+              He llegit i accepto la
+              <span class="lnk" onclick="event.stopPropagation();obrirModal()">política de protecció de dades</span>
+              <span class="req" style="color:var(--error)"> *</span>
+            </div>
+          </div>
+          <div class="chk-row">
+            <input type="checkbox" id="imatges">
+            <div class="chk-box" onclick="togChk('imatges')"></div>
+            <div class="chk-lbl" onclick="togChk('imatges')">
+              Dono el meu consentiment per a la captació i difusió d'imatges i/o veus durant la jornada
+              <span class="req" style="color:var(--error)"> *</span>
+            </div>
+          </div>
+        </div>
+        <span class="ferr" id="e-privacy" style="margin-top:.75rem">
+          Cal acceptar la política de protecció de dades i el consentiment d'imatges per continuar
+        </span>
+      </div>
+
+      <!-- 5. Enviar -->
+      <div class="section" style="padding:1.5rem 2rem">
+        <div class="submit-wrap">
+          <button type="submit" class="btn-submit" id="btn-submit">
+            Inscriure'm a la jornada
+          </button>
+        </div>
+        <p class="note-send">Rebreu un correu de confirmació amb les vostres dades d'inscripció</p>
+      </div>
+
+    </form>
+  </div><!-- /form-wrapper -->
+
+  <!-- Pantalla d'èxit -->
+  <div class="success" id="success">
+    <div class="ico">🎉</div>
+    <h2>Inscripció completada!</h2>
+    <p>Gràcies per inscriure-us a <strong>eXploraSTEAM 2026</strong>.</p>
+    <p>Hem enviat un correu de confirmació a l'adreça que heu facilitat. <strong>Ens veiem a la jornada!</strong></p>
+  </div>
+
+</div><!-- /container -->
+
+<!-- Modal política de dades -->
+<div class="overlay" id="modal-overlay" onclick="tancarModal(event)">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-hd">
+      <h3 id="modal-title">Política de protecció de dades</h3>
+      <button class="modal-cls" onclick="tancarModal()" aria-label="Tancar">×</button>
+    </div>
+    <div class="modal-body">
+      <p><strong>Responsable del tractament:</strong> Secretaria de Millora Educativa del Departament d'Educació i Formació Professional —
+        <a href="mailto:dpd.educacio@gencat.cat">dpd.educacio@gencat.cat</a>
+      </p>
+      <p><strong>Finalitat:</strong> La finalitat és gestionar la participació, difusió i promoció de les jornades formatives o actes que organitzen i porten a terme el Departament d'Educació i Formació Professional i les institucions col·laboradores: controlar l'assistència del personal que participa, emetre els certificats d'assistència, coordinar les accions de recollida i registre de dades del personal docent i d'altres participants, seguiment i avaluació de la participació i de la millora de les accions mitjançant qüestionaris per elaborar indicadors, captació d'imatges i/o veus dels participants, per difondre'ls a través dels mitjans de difusió del Departament d'Educació i Formació Professional.</p>
+      <p><strong>Legitimació:</strong> Consentiment de l'interessat i/o del seu representant legal. El consentiment podrà ser revocat en qualsevol moment, i la revocació no tindrà efectes retroactius.</p>
+      <p><strong>Destinataris:</strong> A l'Administració educativa, en què s'inclou el Consorci d'Educació de Barcelona, i entitats o empreses autoritzades que col·laboren en el procés formatiu.</p>
+      <p><strong>Drets:</strong> Accedir a les dades, rectificar-les, suprimir-les, oposar-se'n al tractament i sol·licitar-ne la limitació. Podeu trobar tota la informació relativa als drets de les persones interessades i com exercir-los al web del Departament d'Educació.</p>
+      <p><strong>Informació addicional:</strong> Podeu consultar la informació addicional i detallada sobre protecció de dades a la pàgina Gestió d'activitats de formació per al personal del Departament d'Educació i Formació Professional.</p>
+    </div>
+    <div class="modal-ft">
+      <button class="btn-accept" onclick="acceptarPrivacy()">Accepto la política de dades</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ── Configuració ──────────────────────────────────────────────────────────
+  // Substituïu per la URL del vostre Google Apps Script després de desplegar-lo
+  const APPS_SCRIPT_URL = 'SUBSTITUÏU_AQUESTA_URL_PEL_VOSTRE_APPS_SCRIPThttps://script.google.com/macros/s/AKfycby0S_JW_qTzuEtF3VhwO8Xwy1771kIj_qhtQgXvoif6ZXBZ1D3FNmYKLNikrjfDRryRdw/exec';
+
+  // ── Tallers ───────────────────────────────────────────────────────────────
+  const TALLERS = [
+    { id: 'w1', nom: 'Mini refugi tèrmic: suro, sensors i dades' },
+    { id: 'w2', nom: 'Boscos en tensió: STEAM crític entre economia i ecologia' },
+    { id: 'w3', nom: 'Calculant l\'edat dels arbres (amb anells i mesurant el diàmetre)' },
+    { id: 'w4', nom: 'Iniciació a la Impressió 3D Maker' },
+    { id: 'w5', nom: 'Petits enginyers' },
+    { id: 'w6', nom: 'L\'enigma del suro' },
+  ];
+
+  let seleccio = [];   // ordenada per preferència
+  let format   = null; // 'a' | 't'
+
+  // Construir targetes de tallers
+  const grid = document.getElementById('w-grid');
+  TALLERS.forEach(t => {
+    const card = document.createElement('div');
+    card.className = 'w-card';
+    card.id = 'c-' + t.id;
+    card.innerHTML = `<div class="w-badge" id="b-${t.id}">?</div><div class="w-name">${t.nom}</div>`;
+    card.addEventListener('click', () => toggleTaller(t.id));
+    grid.appendChild(card);
+  });
+
+  function toggleTaller(id) {
+    const i = seleccio.indexOf(id);
+    if (i !== -1) {
+      seleccio.splice(i, 1);
+    } else {
+      if (seleccio.length >= 3) return;
+      seleccio.push(id);
+    }
+    actualitzarTallers();
+  }
+
+  function actualitzarTallers() {
+    const labels = ['1a', '2a', '3a'];
+    TALLERS.forEach(t => {
+      const card  = document.getElementById('c-' + t.id);
+      const badge = document.getElementById('b-' + t.id);
+      const rank  = seleccio.indexOf(t.id);
+      card.classList.remove('r1', 'r2', 'r3', 'blocked');
+      badge.textContent = '?';
+      if (rank !== -1) {
+        card.classList.add('r' + (rank + 1));
+        badge.textContent = labels[rank];
+      } else if (seleccio.length >= 3) {
+        card.classList.add('blocked');
+      }
+    });
+    const n = seleccio.length;
+    document.getElementById('w-count').textContent =
+      n + ' de 3 taller' + (n !== 1 ? 's' : '') + ' seleccionat' + (n !== 1 ? 's' : '');
+  }
+
+  // ── Format de participació ────────────────────────────────────────────────
+  function triaFormat(f) {
+    format = f;
+    document.getElementById('opt-a').classList.toggle('on', f === 'a');
+    document.getElementById('opt-t').classList.toggle('on', f === 't');
+    document.getElementById('opt-a').querySelector('input').checked = f === 'a';
+    document.getElementById('opt-t').querySelector('input').checked = f === 't';
+    document.getElementById('sec-tallers').style.display = f === 't' ? 'block' : 'none';
+    hide('e-format');
+  }
+
+  // ── Checkboxes ────────────────────────────────────────────────────────────
+  function togChk(id) {
+    document.getElementById(id).checked = !document.getElementById(id).checked;
+  }
+
+  // ── Modal ─────────────────────────────────────────────────────────────────
+  function obrirModal() {
+    document.getElementById('modal-overlay').classList.add('on');
+  }
+  function tancarModal(e) {
+    if (!e || e.target === document.getElementById('modal-overlay')) {
+      document.getElementById('modal-overlay').classList.remove('on');
+    }
+  }
+  function acceptarPrivacy() {
+    document.getElementById('privacy').checked = true;
+    document.getElementById('modal-overlay').classList.remove('on');
+  }
+
+  // ── Helpers ───────────────────────────────────────────────────────────────
+  function show(id) { document.getElementById(id).classList.add('on'); }
+  function hide(id) { document.getElementById(id).classList.remove('on'); }
+
+  // ── Validació i enviament ─────────────────────────────────────────────────
+  document.getElementById('form').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    let ok = true;
+
+    // Camps de text
+    ['nom', 'cognoms', 'dni', 'centre', 'poblacio'].forEach(id => {
+      const input = document.getElementById(id);
+      if (!input.value.trim()) {
+        input.classList.add('err'); show('e-' + id); ok = false;
+      } else {
+        input.classList.remove('err'); hide('e-' + id);
+      }
+    });
+
+    // Email
+    const emailEl = document.getElementById('email');
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailEl.value.trim())) {
+      emailEl.classList.add('err'); show('e-email'); ok = false;
+    } else {
+      emailEl.classList.remove('err'); hide('e-email');
+    }
+
+    // Format
+    if (!format) { show('e-format'); ok = false; } else { hide('e-format'); }
+
+    // Tallers (obligatori si format = tallers)
+    if (format === 't' && seleccio.length === 0) { show('e-tallers'); ok = false; } else { hide('e-tallers'); }
+
+    // Privacitat + imatges
+    if (!document.getElementById('privacy').checked || !document.getElementById('imatges').checked) {
+      show('e-privacy'); ok = false;
+    } else {
+      hide('e-privacy');
+    }
+
+    if (!ok) {
+      document.querySelector('.err, .ferr.on')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+
+    // Construir objecte de dades
+    const nomsTallers = seleccio.map(id => TALLERS.find(t => t.id === id).nom);
+    const dades = {
+      nom:       document.getElementById('nom').value.trim(),
+      cognoms:   document.getElementById('cognoms').value.trim(),
+      dni:       document.getElementById('dni').value.trim(),
+      centre:    document.getElementById('centre').value.trim(),
+      poblacio:  document.getElementById('poblacio').value.trim(),
+      email:     emailEl.value.trim(),
+      format:    format === 'a' ? 'Només assistència' : 'Assistència i tallers',
+      taller1:   nomsTallers[0] || '',
+      taller2:   nomsTallers[1] || '',
+      taller3:   nomsTallers[2] || '',
+      politicaDades:       'Sí',
+      consentimentImatges: 'Sí',
+    };
+
+    // Enviar
+    const btn = document.getElementById('btn-submit');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spin"></span> Enviant...';
+
+    try {
+      await fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        // text/plain evita el preflight CORS i Apps Script pot llegir-lo igualment
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(dades),
+        redirect: 'follow',
+      });
+      // Mostrar èxit (Apps Script pot tornar opaque response; ho tractem sempre com a èxit)
+      document.getElementById('form-wrapper').style.display = 'none';
+      document.getElementById('success').classList.add('on');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } catch (err) {
+      alert('Hi ha hagut un error en enviar el formulari. Torneu-ho a intentar o contacteu amb l\'organització.');
+      btn.disabled = false;
+      btn.innerHTML = 'Inscriure\'m a la jornada';
+    }
+  });
+</script>
+</body>
+</html>
