@@ -375,16 +375,11 @@
   </div>
 </div>
 
-<!-- Formulari ocult + iframe per enviar dades a Apps Script sense CORS -->
-<form id="hidden-form" method="POST" target="hidden-frame" style="display:none">
-  <input type="hidden" name="payload" id="payload-input">
-</form>
-<iframe name="hidden-frame" style="display:none"></iframe>
 
 <script>
   // ── Configuració ──────────────────────────────────────────────────────────
   // Substituïu per la URL del vostre Google Apps Script després de desplegar-lo
-  const APPS_SCRIPT_URL = 'SUBSTITUÏU_AQUESTA_URL_PEL_VOSTRE_APPS_SCRIPThttps://script.google.com/macros/s/AKfycby0S_JW_qTzuEtF3VhwO8Xwy1771kIj_qhtQgXvoif6ZXBZ1D3FNmYKLNikrjfDRryRdw/exec';
+  const APPS_SCRIPT_URL = 'https://script.google.com/macros/library/d/1Mg00YB8uQgfKUQazhSd3s9WcdsbtAuV4QA33GDLNObluHTfy5FO0w3wB/5';
 
   // ── Tallers ───────────────────────────────────────────────────────────────
   const TALLERS = [
@@ -538,16 +533,16 @@
     btn.disabled = true;
     btn.innerHTML = '<span class="spin"></span> Enviant...';
 
-    // Enviament via formulari ocult — evita completament problemes CORS amb Apps Script
-    document.getElementById('payload-input').value = JSON.stringify(dades);
-    document.getElementById('hidden-form').action = APPS_SCRIPT_URL;
-    document.getElementById('hidden-form').submit();
+    // Enviament via GET + URLSearchParams — sense CORS, sense redirects problemàtics
+    const params = new URLSearchParams(dades);
+    new Image().src = APPS_SCRIPT_URL + '?' + params.toString();
 
+    // Mostrem l'èxit després d'1.5 s (temps per a que el script processi)
     setTimeout(() => {
       document.getElementById('form-wrapper').style.display = 'none';
       document.getElementById('success').classList.add('on');
       window.scrollTo({ top: 0, behavior: 'smooth' });
-    }, 2000);
+    }, 1500);
   });
 </script>
 </body>
