@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:projectes.xtec.cat)",
+      "Bash(curl -sL \"https://projectes.xtec.cat/steamcat/wp-content/uploads/usu1760/2026/04/Caratula-eXplora26-2.png\" -o \"/tmp/logo-explorasteam.png\")",
+      "Bash(curl -sL \"https://projectes.xtec.cat/steamcat/wp-content/uploads/usu1760/2026/04/Caratula-eXplora26-2.png\" -o \"C:/Users/34757034d/AppData/Local/Temp/logo-explorasteam.png\")"
+    ]
+  }
+}
