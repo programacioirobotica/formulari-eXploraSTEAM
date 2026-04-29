@@ -293,6 +293,12 @@
             </div>
           </label>
         </div>
+        <button type="button" id="btn-canviar" onclick="triaFormat('a')"
+          style="display:none;background:none;border:none;color:var(--muted);font-size:.82rem;
+                 font-family:inherit;cursor:pointer;padding:.25rem 0;text-decoration:underline;
+                 text-underline-offset:3px;margin-top:.25rem">
+          ← No assistiré als tallers
+        </button>
         <span class="ferr" id="e-format" style="margin-top:.6rem">Seleccioneu una opció</span>
       </div>
 
@@ -446,17 +452,28 @@
   // ── Format de participació ────────────────────────────────────────────────
   function triaFormat(f) {
     format = f;
-    document.getElementById('opt-a').classList.toggle('on', f === 'a');
-    document.getElementById('opt-t').classList.toggle('on', f === 't');
-    document.getElementById('opt-a').querySelector('input').checked = f === 'a';
-    document.getElementById('opt-t').querySelector('input').checked = f === 't';
-    const sec = document.getElementById('sec-tallers');
+    const optA    = document.getElementById('opt-a');
+    const optT    = document.getElementById('opt-t');
+    const canviar = document.getElementById('btn-canviar');
+    const sec     = document.getElementById('sec-tallers');
+
+    optA.classList.toggle('on', f === 'a');
+    optT.classList.toggle('on', f === 't');
+    optA.querySelector('input').checked = f === 'a';
+    optT.querySelector('input').checked = f === 't';
+
     if (f === 't') {
+      optA.style.display = 'none';
+      canviar.style.display = 'block';
       sec.style.display = 'block';
       requestAnimationFrame(() => sec.classList.add('visible'));
     } else {
+      optA.style.display = '';
+      canviar.style.display = 'none';
       sec.classList.remove('visible');
-      sec.addEventListener('transitionend', () => { if (!sec.classList.contains('visible')) sec.style.display = 'none'; }, { once: true });
+      sec.addEventListener('transitionend', () => {
+        if (!sec.classList.contains('visible')) sec.style.display = 'none';
+      }, { once: true });
     }
     hide('e-format');
   }
