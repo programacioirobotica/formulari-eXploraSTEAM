@@ -350,6 +350,12 @@
           </button>
         </div>
         <p class="note-send">Rebreu un correu de confirmació amb les vostres dades d'inscripció</p>
+        <div id="e-duplicate" style="display:none; margin-top:1rem; padding:.875rem 1rem;
+             background:#fdf0f0; border:1px solid #e8b4b4; border-radius:10px;
+             font-size:.9rem; color:#7a1f1f; line-height:1.5;">
+          <strong>Aquest correu electrònic ja està registrat.</strong><br>
+          Si voleu fer canvis en la vostra inscripció, poseu-vos en contacte amb l'organització.
+        </div>
       </div>
 
     </form>
@@ -567,13 +573,28 @@
     const params = new URLSearchParams(dades);
     const url = APPS_SCRIPT_URL + '?' + params.toString();
 
-    // no-cors en GET funciona sense problemes de redirect (a diferència de POST)
-    // La petició arriba al script; simplement no podem llegir la resposta
-    fetch(url, { mode: 'no-cors' }).catch(() => {});
+    try {
+      const resp = await fetch(url, { redirect: 'follow' });
+      const text = await resp.text();
 
-    document.getElementById('form-wrapper').style.display = 'none';
-    document.getElementById('success').classList.add('on');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+      if (text.trim() === 'DUPLICATE') {
+        btn.disabled = false;
+        btn.innerHTML = 'Inscriure\'m a la jornada';
+        document.getElementById('e-duplicate').style.display = 'block';
+        document.getElementById('e-duplicate').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      }
+      // "OK" o qualsevol altra resposta → èxit
+      document.getElementById('form-wrapper').style.display = 'none';
+      document.getElementById('success').classList.add('on');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    } catch (_) {
+      // CORS bloqueja la lectura però la petició ha arribat al servidor
+      document.getElementById('form-wrapper').style.display = 'none';
+      document.getElementById('success').classList.add('on');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   });
 </script>
 </body>

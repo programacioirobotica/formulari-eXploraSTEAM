@@ -16,6 +16,15 @@ function doGet(e) {
 
     const full = SpreadsheetApp.openById(SHEET_ID).getActiveSheet();
 
+    // Comprovar si el correu ja està registrat (columna 7 = correu electrònic)
+    if (full.getLastRow() > 1) {
+      const emails = full.getRange(2, 7, full.getLastRow() - 1, 1).getValues();
+      const jaExisteix = emails.some(fila => fila[0].toString().toLowerCase() === p.email.toLowerCase());
+      if (jaExisteix) {
+        return ContentService.createTextOutput('DUPLICATE');
+      }
+    }
+
     // Capçalera automàtica al primer ús
     if (full.getLastRow() === 0) {
       const cap = ['Timestamp','Nom','Cognoms','DNI / NIE','Centre','Població',
