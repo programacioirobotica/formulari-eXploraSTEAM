@@ -51,7 +51,7 @@ function testManual() {
     nom: 'Test', cognoms: 'Prova', dni: '00000000T',
     centre: 'Centre de prova', poblacio: 'Barcelona',
     email: Session.getActiveUser().getEmail(),
-    format: 'Assistència i tallers',
+    format: 'Sí',
     taller1: 'L\'enigma del suro', taller2: 'Petits enginyers', taller3: '',
     politicaDades: 'Sí', consentimentImatges: 'Sí'
   };
@@ -82,13 +82,22 @@ function testManual() {
 
 // ── Correu de confirmació ─────────────────────────────────────
 function enviarCorreu(p) {
-  const filesTallers = p.format === 'Assistència i tallers' ? `
+  const filesTallers = p.format === 'Sí' ? `
     <tr>
-      <td style="padding:7px 0;color:#666;font-weight:700;width:42%">1a preferència:</td>
-      <td style="padding:7px 0">${p.taller1 || '—'}</td>
+      <td colspan="2" style="padding:10px 0 4px;color:#bf4d0e;font-weight:800;font-size:13px;
+          border-top:2px solid #f0c9b0">Preferències de taller (ordre de prioritat)</td>
     </tr>
-    ${p.taller2 ? `<tr><td style="padding:7px 0;color:#666;font-weight:700">2a preferència:</td><td style="padding:7px 0">${p.taller2}</td></tr>` : ''}
-    ${p.taller3 ? `<tr><td style="padding:7px 0;color:#666;font-weight:700">3a preferència:</td><td style="padding:7px 0">${p.taller3}</td></tr>` : ''}
+    <tr>
+      <td style="padding:6px 0;color:#666;font-weight:700;width:42%">1a opció:</td>
+      <td style="padding:6px 0;font-weight:600">${p.taller1 || '—'}</td>
+    </tr>
+    ${p.taller2 ? `<tr style="background:rgba(255,255,255,.6)"><td style="padding:6px 0;color:#666;font-weight:700">2a opció:</td><td style="padding:6px 0;font-weight:600">${p.taller2}</td></tr>` : ''}
+    ${p.taller3 ? `<tr><td style="padding:6px 0;color:#666;font-weight:700">3a opció:</td><td style="padding:6px 0;font-weight:600">${p.taller3}</td></tr>` : ''}
+    <tr>
+      <td colspan="2" style="padding:8px 0 2px;font-size:12px;color:#6b4535;font-style:italic">
+        Se t'assignarà un sol taller i te'l comunicarem pròximament.
+      </td>
+    </tr>
   ` : '';
 
   const html = `<!DOCTYPE html>
